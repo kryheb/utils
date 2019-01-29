@@ -25,6 +25,13 @@
 #include <boost/date_time/posix_time/posix_time_io.hpp>
 
 
+Logger& Logger::getInstance()
+{
+  static Logger logger;
+  return logger;
+}
+
+
 void Logger::init()
 {
   configureConsoleSink();

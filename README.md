@@ -11,9 +11,9 @@ Logger class based on boost::log.
 ```
 int main(int, char*[])
 {
-  Logger logger;
-
+  auto& logger = Logger::getInstance();
   logger.init();
+
   auto mainChannel = logger.addChannel("MAIN_CHANNEL");
   BOOST_LOG_SEV(mainChannel, boost::log::trivial::severity_level::trace) << "Logging to main channel";
   BOOST_LOG_TRIVIAL(trace) << "Logging to general";

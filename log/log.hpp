@@ -26,11 +26,16 @@ class Logger {
 
   std::map<std::string, Channel> m_channels;
 
-public:
-  
+private:
   Logger(){}
-  ~Logger(){}
+  Logger(const Logger&) = delete;
+  Logger& operator=(const Logger&) = delete;
+  Logger(Logger&&) = delete;
+  Logger& operator=(Logger&&) = delete;
 
+
+public:
+  static Logger& getInstance();
   void init();
   static void formatter(logging::record_view const& aRec, logging::formatting_ostream& aStrm);
   Channel& addChannel(const std::string& aName);
