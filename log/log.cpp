@@ -59,7 +59,7 @@ void Logger::formatter(logging::record_view const& aRec, logging::formatting_ost
     severity = "[" + std::string(boost::log::trivial::to_string(*severityAttr)) + "]";
   }
 
-  ss  << std::left << std::setfill(' ') 
+  ss  << std::left << std::setfill(' ')
       << std::setw(15)<< timestamp
       << std::setw(15) << name
       << std::setw(10) << severity
@@ -91,10 +91,10 @@ void Logger::configureFileSink()
 }
 
 
-Channel& Logger::addChannel(const std::string& aName)
+LoggerChannel& Logger::addChannel(const std::string& aName)
 {
-  m_channels.try_emplace(aName, Channel{keywords::channel = aName});
-  Channel& channel = m_channels.at(aName);
+  m_channels.try_emplace(aName, LoggerChannel{keywords::channel = aName});
+  auto& channel = m_channels.at(aName);
   channel.add_attribute("Name", boost::log::attributes::constant<std::string>(aName));
 
   return channel;

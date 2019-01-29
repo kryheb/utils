@@ -7,10 +7,13 @@
  * Logger based on boost::log with channel and severity support
  */
 
+#pragma once
+
 #include <map>
 #include <boost/log/trivial.hpp>
 #include <boost/log/sources/severity_channel_logger.hpp>
 #include <boost/log/utility/formatting_ostream.hpp>
+#include <boost/log/trivial.hpp>
 
 
 namespace logging = boost::log;
@@ -20,11 +23,11 @@ namespace keywords = boost::log::keywords;
 namespace sinks = boost::log::sinks;
 
 
-using Channel =  src::severity_channel_logger<boost::log::trivial::severity_level>;
+using LoggerChannel =  src::severity_channel_logger<boost::log::trivial::severity_level>;
 
 class Logger {
 
-  std::map<std::string, Channel> m_channels;
+  std::map<std::string, LoggerChannel> m_channels;
 
 private:
   Logger(){}
@@ -38,7 +41,7 @@ public:
   static Logger& getInstance();
   void init();
   static void formatter(logging::record_view const& aRec, logging::formatting_ostream& aStrm);
-  Channel& addChannel(const std::string& aName);
+  LoggerChannel& addChannel(const std::string& aName);
 
 private:
   void configureConsoleSink();
