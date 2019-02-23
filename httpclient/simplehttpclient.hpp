@@ -12,6 +12,7 @@
 #include <string>
 #include "./../log/log.hpp"
 #include <type_traits>
+#include <array>
 
 namespace http {
 
@@ -23,22 +24,30 @@ enum class ErrorCode {
   HTTP_200_OK = 200,
   HTTP_403_FORBIDDEN = 403,
   HTTP_404_NOT_FOUND = 404,
-  Unknown,
-  First = HTTP_200_OK,
-  Last = HTTP_404_NOT_FOUND
+  Unknown
 };
 
-inline ErrorCode operator++(ErrorCode& aErr) {
-  return (ErrorCode)(static_cast<std::underlying_type_t<ErrorCode>>(aErr) + 1);
-}
 
-std::optional<ErrorCode> errorCodeFromInt(uint aInt);
+struct Errors {
+  const std::array<ErrorCode, 3> errorCodes;
+
+  std::optional<ErrorCode> fromInt(uint aInt);
+  static int toInt(ErrorCode);
+};
+
+
 
 using Callback = std::function<void (const std::string& aData, ErrorCode aErrCode)>;
 
 class SimpleHttpClient
 {
   LoggerChannel mLoggerChannel;
+
+  Errors errors = {{
+    ErrorCode::HTTP_200_OK,
+    ErrorCode::HTTP_403_FORBIDDEN,
+    ErrorCode::HTTP_404_NOT_FOUND
+  }};
 
   public:
   SimpleHttpClient();

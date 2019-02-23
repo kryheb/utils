@@ -18,14 +18,23 @@ using namespace boost::log::trivial;
 using namespace http;
 
 
-std::optional<ErrorCode> http::errorCodeFromInt(uint aInt)
+std::optional<ErrorCode> http::Errors::fromInt(uint aInt)
 {
-  for (auto e = ErrorCode::First; e <= ErrorCode::Last; ++e) {
-    if (static_cast<std::underlying_type_t<ErrorCode>>(e) == aInt) {
-      return e;
-    }
+  auto code = std::find_if(errorCodes.begin(), errorCodes.end(), [aInt](auto aErrorCode){
+    return toInt(aErrorCode) == aInt;
+  });
+
+  if (code == errorCodes.end()) {
+    return std::nullopt;
   }
-  return std::nullopt;
+
+  return *code;
+}
+
+
+int http::Errors::toInt(ErrorCode aCode)
+{
+  return static_cast<std::underlying_type_t<ErrorCode>>(aCode);
 }
 
 
@@ -68,7 +77,7 @@ void SimpleHttpClient::get(const std::string& aUrl, Callback aCallback)
       curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &rCode);
       curl_easy_setopt(curl, CURLOPT_WRITEDATA, &rString);
       LOG(severity_level::debug) << "Response (" << rCode << ") " << rString;
-      if (aCallback) aCallback(rString, errorCodeFromInt(rCode).value_or(ErrorCode::Unknown));
+      if (aCallback) aCallback(rString, errors.fromInt(rCode).value_or(ErrorCode::Unknown));
     }
 
   }
